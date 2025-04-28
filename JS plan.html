@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطة تعلم JavaScript - 40 حصة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        dark: {
+                            100: '#1E293B',
+                            200: '#334155',
+                            300: '#475569',
+                            400: '#64748B',
+                            500: '#94A3B8',
+                        }
+                    },
+                    fontFamily: {
+                        'tajawal': ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .session-card {
+            transition: all 0.3s ease;
+        }
+        
+        .session-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e2e8f0;
+        }
+        
+        .dark .progress-bar {
+            background-color: #2d3748;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background-color: #4299e1;
+            transition: width 0.5s ease;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+        
+        /* Dark mode toggle animation */
+        .dark-mode-toggle {
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Animation classes */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .animate-fade-out {
+            animation: fadeOut 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(10px); }
+        }
+        
+        /* Type colors */
+        .type-theory {
+            background-color: #DBEAFE;
+            color: #1D4ED8;
+        }
+        .dark .type-theory {
+            background-color: #1E3A8A;
+            color: #93C5FD;
+        }
+        
+        .type-practice {
+            background-color: #D1FAE5;
+            color: #047857;
+        }
+        .dark .type-practice {
+            background-color: #064E3B;
+            color: #6EE7B7;
+        }
+        
+        .type-project {
+            background-color: #EDE9FE;
+            color: #5B21B6;
+        }
+        .dark .type-project {
+            background-color: #5B21B6;
+            color: #C4B5FD;
+        }
+        
+        .type-review {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+        .dark .type-review {
+            background-color: #78350F;
+            color: #FCD34D;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-dark-100 dark:text-gray-200">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8 text-center relative">
+            <div class="absolute left-0 top-0">
+                <button id="dark-mode-toggle" class="dark-mode-toggle p-2 rounded-full bg-gray-200 dark:bg-dark-200 text-gray-700 dark:text-gray-300">
+                    <i id="dark-mode-icon" class="fas fa-moon"></i>
+                </button>
+            </div>
+            
+            <h1 class="text-3xl font-bold text-primary mb-2">خطة تعلم JavaScript</h1>
+            <p class="text-gray-600 dark:text-gray-400">40 حصة من المبتدئ إلى المتوسط</p>
+            
+            <!-- Progress bar -->
+            <div class="mt-6 max-w-2xl mx-auto">
+                <div class="flex justify-between mb-2">
+                    <span class="text-sm font-medium">إجمالي الحصص</span>
+                    <span class="text-sm font-medium"><span id="completed-count">0</span>/40 مكتملة</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Filter and search -->
+        <div class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="relative w-full md:w-64">
+                <input type="text" id="search-input" placeholder="ابحث عن حصة..." class="w-full pr-10 pl-4 py-2 border border-gray-300 dark:border-dark-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition bg-white dark:bg-dark-200 dark:text-gray-200">
+                <i class="fas fa-search absolute right-3 top-3 text-gray-400 dark:text-gray-500"></i>
+            </div>
+            
+            <div class="flex gap-2 w-full md:w-auto">
+                <select id="type-filter" class="px-4 py-2 border border-gray-300 dark:border-dark-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition bg-white dark:bg-dark-200 dark:text-gray-200">
+                    <option value="all">جميع الأنواع</option>
+                    <option value="theory">نظري</option>
+                    <option value="practice">تطبيق</option>
+                    <option value="project">مشروع</option>
+                    <option value="review">مراجعة</option>
+                </select>
+                
+                <select id="week-filter" class="px-4 py-2 border border-gray-300 dark:border-dark-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition bg-white dark:bg-dark-200 dark:text-gray-200">
+                    <option disabled selected value="all">جميع الأسابيع</option>
+                    <option value="1">الأسبوع 1</option>
+                    <option value="2">الأسبوع 2</option>
+                    <option value="3">الأسبوع 3</option>
+                    <option value="4">الأسبوع 4</option>
+                    <option value="5">الأسبوع 5</option>
+                    <option value="6">الأسبوع 6</option>
+                    <option value="7">الأسبوع 7</option>
+                    <option value="8">الأسبوع 8</option>
+                    <option value="9">الأسبوع 9</option>
+                    <option value="10">الأسبوع 10</option>
+                    <option value="11">الأسبوع 11</option>
+                    <option value="12">الأسبوع 12</option>
+                </select>
+                
+                <select id="status-filter" class="px-4 py-2 border border-gray-300 dark:border-dark-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition bg-white dark:bg-dark-200 dark:text-gray-200">
+                    <option value="all">جميع الحالات</option>
+                    <option value="completed">مكتملة</option>
+                    <option value="incomplete">غير مكتملة</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Sessions grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="sessions-container">
+            <!-- Sessions will be added here by JavaScript -->
+        </div>
+        
+        <!-- Stats footer -->
+        <footer class="mt-12 bg-white dark:bg-dark-200 rounded-xl shadow-sm dark:shadow-none p-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg border border-blue-100 dark:border-blue-900/50">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-100 dark:bg-blue-800 p-3 rounded-full">
+                            <i class="fas fa-book text-blue-600 dark:text-blue-300 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">إجمالي الحصص</p>
+                            <p class="text-2xl font-bold text-blue-600 dark:text-blue-300">40</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg border border-green-100 dark:border-green-900/50">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-green-100 dark:bg-green-800 p-3 rounded-full">
+                            <i class="fas fa-check-circle text-green-600 dark:text-green-300 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">الحصص المكتملة</p>
+                            <p class="text-2xl font-bold text-green-600 dark:text-green-300"><span id="stats-completed">0</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-yellow-50 dark:bg-yellow-900/30 p-4 rounded-lg border border-yellow-100 dark:border-yellow-900/50">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-yellow-100 dark:bg-yellow-800 p-3 rounded-full">
+                            <i class="fas fa-clock text-yellow-600 dark:text-yellow-300 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">الحصص المتبقية</p>
+                            <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-300"><span id="stats-remaining">40</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg border border-purple-100 dark:border-purple-900/50">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-purple-100 dark:bg-purple-800 p-3 rounded-full">
+                            <i class="fas fa-project-diagram text-purple-600 dark:text-purple-300 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">عدد المشاريع</p>
+                            <p class="text-2xl font-bold text-purple-600 dark:text-purple-300">6</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dark mode toggle functionality
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const darkModeIcon = document.getElementById('dark-mode-icon');
+            
+            // Check for saved user preference or use system preference
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            const currentTheme = localStorage.getItem('theme');
+            
+            if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+                document.documentElement.classList.add('dark');
+                darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+            
+            darkModeToggle.addEventListener('click', function() {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                
+                if (isDark) {
+                    darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+                } else {
+                    darkModeIcon.classList.replace('fa-sun', 'fa-moon');
+                }
+            });
+            
+            // Sessions data
+            const sessionsData = [
+                { week: 1, number: 2, title: "بيئة العمل (المتصفح - VS Code)", type: "theory", desc: "كيفية إعداد بيئة التطوير والتعرف على أدوات المطور في المتصفح.", icon: "fa-laptop-code", completed: false },
+                { week: 1, number: 1, title: "مقدمة عن JavaScript وأهميتها", type: "theory", desc: "تعريف باللغة، استخداماتها، ومجالات تطبيقها في الويب والتطبيقات.", icon: "fa-code", completed: false },
+                { week: 1, number: 3, title: "كتابة أول برنامج (console.log)", type: "practice", desc: "تعلم كيفية كتابة وتنفيذ أول سطر برمجي في JavaScript.", icon: "fa-terminal", completed: false },
+                { week: 1, number: 4, title: "التعرف على المتغيرات (var, let, const)", type: "theory", desc: "فهم الفروق بين أنواع المتغيرات وكيفية استخدامها.", icon: "fa-cube", completed: false },
+                { week: 2, number: 5, title: "أنواع البيانات (Data Types)", type: "theory", desc: "تعلم أنواع البيانات الأساسية في JavaScript وكيفية التعامل معها.", icon: "fa-database", completed: false },
+                { week: 2, number: 6, title: "العمليات الحسابية والمنطقية", type: "practice", desc: "تطبيق العمليات الحسابية والمنطقية في البرامج.", icon: "fa-calculator", completed: false },
+                { week: 2, number: 7, title: "الجمل الشرطية (if, else, switch)", type: "theory", desc: "كيفية اتخاذ القرارات في البرامج باستخدام الجمل الشرطية.", icon: "fa-code-branch", completed: false },
+                { week: 2, number: 8, title: "تدريبات شاملة", type: "practice", desc: "تطبيق شامل لكل ما تعلمناه حتى الآن في تمارين عملية.", icon: "fa-dumbbell", completed: false },
+                { week: 3, number: 9, title: "الحلقات (for, while, do-while)", type: "theory", desc: "تعلم كيفية تنفيذ الأوامر بشكل متكرر باستخدام الحلقات.", icon: "fa-redo", completed: false },
+                { week: 3, number: 10, title: "التدرب على الحلقات", type: "practice", desc: "حل تمارين عملية لترسيخ مفهوم الحلقات.", icon: "fa-sync", completed: false },
+                { week: 3, number: 11, title: "المشروع الأول: آلة حاسبة بسيطة", type: "project", desc: "بناء آلة حاسبة بسيطة باستخدام ما تعلمناه حتى الآن.", icon: "fa-calculator", completed: false },
+                { week: 4, number: 12, title: "الدوال (Functions)", type: "theory", desc: "تعلم كيفية إنشاء واستدعاء الدوال لتنظيم الكود.", icon: "fa-function", completed: false },
+                { week: 4, number: 13, title: "الكائنات (Objects)", type: "theory", desc: "فهم مفهوم الكائنات وخصائصها في JavaScript.", icon: "fa-cube", completed: false },
+                { week: 4, number: 14, title: "المصفوفات (Arrays)", type: "theory", desc: "تعلم كيفية التعامل مع المصفوفات وتخزين البيانات فيها.", icon: "fa-layer-group", completed: false },
+                { week: 4, number: 15, title: "مراجعة شاملة", type: "review", desc: "مراجعة كل ما تعلمناه في الأسابيع الأربعة الأولى.", icon: "fa-book-open", completed: false },
+                { week: 5, number: 16, title: "العمليات على المصفوفات (push, pop, map, filter, reduce)", type: "practice", desc: "تعلم أهم دوال المصفوفات وكيفية استخدامها.", icon: "fa-tasks", completed: false },
+                { week: 5, number: 17, title: "الأحداث (Events)", type: "theory", desc: "كيفية التعامل مع أحداث المستخدم في المتصفح.", icon: "fa-mouse-pointer", completed: false },
+                { week: 5, number: 18, title: "التلاعب بالـ DOM", type: "practice", desc: "تعلم كيفية تعديل عناصر الصفحة ديناميكيًا.", icon: "fa-code", completed: false },
+                { week: 5, number: 19, title: "تدريبات عملية", type: "practice", desc: "تمارين عملية على الأحداث والتلاعب بالـ DOM.", icon: "fa-laptop-code", completed: false },
+                { week: 6, number: 20, title: "المشروع الثاني: To-Do List", type: "project", desc: "بناء تطبيق قائمة مهام تفاعلي.", icon: "fa-tasks", completed: false },
+                { week: 6, number: 21, title: "القيم المرجعية والبدائية", type: "theory", desc: "فهم الفرق بين القيم المرجعية والبدائية في JavaScript.", icon: "fa-arrows-alt", completed: false },
+                { week: 6, number: 22, title: "التعامل مع JSON", type: "theory", desc: "تعلم كيفية تحويل البيانات من وإلى صيغة JSON.", icon: "fa-file-code", completed: false },
+                { week: 7, number: 23, title: "التخزين المحلي (localStorage)", type: "practice", desc: "كيفية حفظ البيانات محليًا في متصفح المستخدم.", icon: "fa-database", completed: false },
+                { week: 7, number: 24, title: "البرمجة الكائنية (OOP)", type: "theory", desc: "مقدمة إلى مفاهيم البرمجة الكائنية في JavaScript.", icon: "fa-object-group", completed: false },
+                { week: 7, number: 25, title: "الوراثة والتوسيع في OOP", type: "theory", desc: "تعلم كيفية توسيع الكائنات واستخدام الوراثة.", icon: "fa-project-diagram", completed: false },
+                { week: 7, number: 26, title: "مراجعة شاملة", type: "review", desc: "مراجعة كل ما تعلمناه في الأسابيع الثلاثة الماضية.", icon: "fa-book-open", completed: false },
+                { week: 8, number: 27, title: "المشروع الثالث: متجر بسيط للمنتجات", type: "project", desc: "بناء متجر إلكتروني بسيط يعرض المنتجات.", icon: "fa-shopping-cart", completed: false },
+                { week: 8, number: 28, title: "الجلب من الإنترنت (fetch)", type: "theory", desc: "تعلم كيفية جلب البيانات من الإنترنت باستخدام fetch.", icon: "fa-cloud-download-alt", completed: false },
+                { week: 8, number: 29, title: "التعامل مع الـ APIs", type: "practice", desc: "كيفية التعامل مع واجهات برمجة التطبيقات (APIs).", icon: "fa-plug", completed: false },
+                { week: 9, number: 30, title: "التعامل مع الأخطاء (try, catch)", type: "theory", desc: "كيفية التعامل مع الأخطاء في JavaScript.", icon: "fa-bug", completed: false },
+                { week: 9, number: 31, title: "المصفوفات المتقدمة (every, some, find)", type: "practice", desc: "تعلم دوال المصفوفات المتقدمة وكيفية استخدامها.", icon: "fa-search", completed: false },
+                { week: 9, number: 32, title: "تدريبات عملية", type: "practice", desc: "تمارين عملية على المصفوفات المتقدمة.", icon: "fa-laptop-code", completed: false },
+                { week: 9, number: 33, title: "المشروع الرابع: تطبيق لعرض الطقس", type: "project", desc: "بناء تطبيق يعرض حالة الطقس باستخدام API.", icon: "fa-cloud-sun", completed: false },
+                { week: 10, number: 34, title: "التعامل مع الكائن Date", type: "practice", desc: "كيفية التعامل مع التواريخ والأوقات في JavaScript.", icon: "fa-calendar-alt", completed: false },
+                { week: 10, number: 35, title: "المؤقتات (setTimeout, setInterval)", type: "practice", desc: "تعلم كيفية تنفيذ الأوامر بعد فترة أو بشكل متكرر.", icon: "fa-clock", completed: false },
+                { week: 10, number: 36, title: "مراجعة شاملة", type: "review", desc: "مراجعة كل ما تعلمناه في الأسابيع الماضية.", icon: "fa-book-open", completed: false },
+                { week: 11, number: 37, title: "المشروع الخامس: معرض صور ديناميكي", type: "project", desc: "بناء معرض صور تفاعلي مع إمكانية التصفح.", icon: "fa-images", completed: false },
+                { week: 11, number: 38, title: "التحضير للمشروع النهائي", type: "project", desc: "ورشة عمل للتحضير للمشروع النهائي.", icon: "fa-tools", completed: false },
+                { week: 12, number: 39, title: "المشروع النهائي: لوحة تحكم Dashboard", type: "project", desc: "بناء لوحة تحكم كاملة مع عدة أقسام ووظائف.", icon: "fa-chart-line", completed: false },
+                { week: 12, number: 40, title: "عرض ومناقشة المشاريع", type: "review", desc: "عرض المشاريع النهائية ومناقشة التحديات والحلول.", icon: "fa-chalkboard-teacher", completed: false }
+            ];
+            
+            const sessionsContainer = document.getElementById('sessions-container');
+            const progressFill = document.getElementById('progress-fill');
+            const completedCount = document.getElementById('completed-count');
+            const statsCompleted = document.getElementById('stats-completed');
+            const statsRemaining = document.getElementById('stats-remaining');
+            const searchInput = document.getElementById('search-input');
+            const typeFilter = document.getElementById('type-filter');
+            const weekFilter = document.getElementById('week-filter');
+            const statusFilter = document.getElementById('status-filter');
+            
+            let completedSessions = 0;
+            
+            // Load saved completion status from localStorage
+            function loadCompletionStatus() {
+                sessionsData.forEach(session => {
+                    const savedStatus = localStorage.getItem(`session-${session.number}-completed`);
+                    if (savedStatus === 'true') {
+                        session.completed = true;
+                        completedSessions++;
+                    }
+                });
+                updateProgress();
+            }
+            
+            // Render sessions based on filters
+            function renderSessions() {
+                sessionsContainer.innerHTML = '';
+                
+                const searchTerm = searchInput.value.toLowerCase();
+                const typeFilterValue = typeFilter.value;
+                const weekFilterValue = weekFilter.value;
+                const statusFilterValue = statusFilter.value;
+                
+                sessionsData
+                    .filter(session => {
+                        // Apply search filter
+                        if (searchTerm && 
+                            !session.title.toLowerCase().includes(searchTerm) && 
+                            !session.desc.toLowerCase().includes(searchTerm)) {
+                            return false;
+                        }
+                        
+                        // Apply type filter
+                        if (typeFilterValue !== 'all' && session.type !== typeFilterValue) {
+                            return false;
+                        }
+                        
+                        // Apply week filter
+                        if (weekFilterValue !== 'all' && session.week.toString() !== weekFilterValue) {
+                            return false;
+                        }
+                        
+                        // Apply status filter
+                        if (statusFilterValue === 'completed' && !session.completed) {
+                            return false;
+                        }
+                        if (statusFilterValue === 'incomplete' && session.completed) {
+                            return false;
+                        }
+                        
+                        return true;
+                    })
+                    .forEach(session => {
+                        const sessionCard = document.createElement('div');
+                        sessionCard.className = `session-card bg-white dark:bg-dark-200 rounded-xl shadow-sm dark:shadow-none overflow-hidden border border-gray-200 dark:border-dark-300 hover:shadow-md dark:hover:shadow-none ${session.completed ? 'border-green-200 dark:border-green-800' : ''}`;
+                        
+                        // Determine type color class
+                        let typeColorClass = '';
+                        switch(session.type) {
+                            case 'theory': typeColorClass = 'type-theory'; break;
+                            case 'practice': typeColorClass = 'type-practice'; break;
+                            case 'project': typeColorClass = 'type-project'; break;
+                            case 'review': typeColorClass = 'type-review'; break;
+                        }
+                        
+                        sessionCard.innerHTML = `
+                            <div class="p-5">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <span class="text-xs font-medium px-2 py-1 rounded ${typeColorClass}">
+                                            ${getTypeName(session.type)}
+                                        </span>
+                                    </div>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400">الأسبوع ${session.week} - الحصة ${session.number}</span>
+                                </div>
+                                
+                                <h3 class="font-bold text-lg mb-2 dark:text-gray-100">${session.title}</h3>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">${session.desc}</p>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas ${session.icon} text-primary dark:text-primary-300"></i>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">${session.type === 'project' ? 'مشروع' : 'حصة'} ${session.number}</span>
+                                    </div>
+                                    
+                                    <button onclick="toggleCompletion(this, ${session.number})" class="px-3 py-1 rounded-lg text-sm font-medium ${session.completed ? 'bg-green-100 dark:bg-green-800/30 text-green-800 dark:text-green-300' : 'bg-gray-100 dark:bg-dark-300 text-gray-800 dark:text-gray-300'}">
+                                        ${session.completed ? 'مكتملة <i class="fas fa-check ml-1"></i>' : 'إكمال <i class="fas fa-plus ml-1"></i>'}
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="px-5 py-3 border-t border-gray-100 dark:border-dark-300 bg-gray-50 dark:bg-dark-300 flex items-center justify-between">
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    ${getLevel(session.number)}
+                                </div>
+                                
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    ${session.completed ? 'تم الإكمال' : 'لم تكتمل بعد'}
+                                </div>
+                            </div>
+                        `;
+                        
+                        sessionsContainer.appendChild(sessionCard);
+                    });
+            }
+            
+            // Helper function to get type name
+            function getTypeName(type) {
+                switch(type) {
+                    case 'theory': return 'حصة نظرية';
+                    case 'practice': return 'حصة تطبيقية';
+                    case 'project': return 'مشروع عملي';
+                    case 'review': return 'مراجعة شاملة';
+                    default: return type;
+                }
+            }
+            
+            // Helper function to get level
+            function getLevel(sessionNumber) {
+                if (sessionNumber < 10) return 'مبتدئ';
+                if (sessionNumber < 25) return 'متوسط';
+                return 'متقدم';
+            }
+            
+            // Update progress
+            function updateProgress() {
+                const percentage = (completedSessions / 40) * 100;
+                progressFill.style.width = `${percentage}%`;
+                completedCount.textContent = completedSessions;
+                statsCompleted.textContent = completedSessions;
+                statsRemaining.textContent = 40 - completedSessions;
+            }
+            
+            // Make function available globally
+            window.toggleCompletion = function(button, sessionNumber) {
+                const session = sessionsData.find(s => s.number === sessionNumber);
+                session.completed = !session.completed;
+                
+                // Save to localStorage
+                localStorage.setItem(`session-${sessionNumber}-completed`, session.completed);
+                
+                if (session.completed) {
+                    completedSessions++;
+                } else {
+                    completedSessions--;
+                }
+                
+                updateProgress();
+                renderSessions();
+                
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-4 right-4 bg-white dark:bg-dark-200 shadow-lg rounded-lg px-4 py-2 border-l-4 border-green-500 dark:border-green-600 flex items-center gap-2 animate-fade-in';
+                notification.innerHTML = `
+                    <i class="fas ${session.completed ? 'fa-check-circle text-green-500 dark:text-green-400' : 'fa-times-circle text-red-500 dark:text-red-400'}"></i>
+                    <span class="dark:text-gray-200">تم ${session.completed ? 'إكمال' : 'إلغاء إكمال'} الحصة ${sessionNumber}</span>
+                `;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.classList.add('animate-fade-out');
+                    setTimeout(() => notification.remove(), 500);
+                }, 3000);
+            };
+            
+            // Initialize
+            loadCompletionStatus();
+            renderSessions();
+            
+            // Add event listeners for filters
+            searchInput.addEventListener('input', renderSessions);
+            typeFilter.addEventListener('change', renderSessions);
+            weekFilter.addEventListener('change', renderSessions);
+            statusFilter.addEventListener('change', renderSessions);
+        });
+    </script>
+</body>
+</html>
